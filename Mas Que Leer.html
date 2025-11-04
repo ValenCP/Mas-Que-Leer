@@ -1,0 +1,2358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mas Que Leer</title>
+    <link rel="icon" type="image/png" href="./Recursos/Mas Que Leer.png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #022752 0%, #0b26af 100%);
+            min-height: 100vh;
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 400px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-logo h1 {
+            color: #002b5c;
+            font-size: 32px;
+            margin-top: 15px;
+        }
+
+        .logo-circle {
+            width: 140px; 
+            height: 140px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: #002b5c;
+            overflow: hidden;
+            border: 3px solid #002b5c;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group input[type="password"] {
+            padding-right: 45px;
+        }
+
+        .form-group input[type="password"]::-ms-reveal,
+        .form-group input[type="password"]::-ms-clear,
+        .form-group input[type="password"]::-webkit-credentials-auto-fill-button,
+        .form-group input[type="password"]::-webkit-contacts-auto-fill-button {
+            display: none !important;
+        }
+
+        .form-group input[type="text"]::-ms-reveal,
+        .form-group input[type="text"]::-ms-clear {
+            display: none !important;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #002b5c;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            bottom: 12px;
+            cursor: pointer;
+            color: #666;
+            font-size: 18px;
+            background: none;
+            border: none;
+            padding: 5px;
+            z-index: 10;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .password-toggle:hover {
+            color: #002b5c;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #002b5c 0%, #0056b3 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f44336 0%, #c62828 100%);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+        }
+
+        .toggle-form {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+
+        .toggle-form a {
+            color: #002b5c;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .role-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .role-option {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .role-option.selected {
+            border-color: #002b5c;
+            background: #e3f2fd;
+        }
+
+        .app-container {
+            display: none;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: #002b5c;
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+
+        .mobile-menu-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .sidebar {
+            width: 220px;
+            background: #002b5c;
+            color: white;
+            position: fixed;
+            height: 100%;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 30px;
+            cursor: pointer;
+        }
+
+        .sidebar-logo {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 auto 20px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(135, 162, 245, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .sidebar-logo:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(149, 158, 237, 0.4); 
+        }
+
+        .user-info {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .user-info:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .user-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .user-role {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .user-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            overflow: hidden;
+            z-index: 100;
+        }
+
+        .user-dropdown.show {
+            display: block;
+            animation: slideDown 0.3s;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dropdown-item {
+            padding: 12px 15px;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dropdown-item:hover {
+            background: #f5f5f5;
+        }
+
+        .dropdown-item.logout {
+            background: #c33;
+            color: white;
+        }
+
+        .dropdown-item.logout:hover {
+            background: #a22;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+            margin: 5px 0;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu a:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateX(5px);
+        }
+
+        .sidebar-menu a.active {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .sidebar-menu a i {
+            margin-right: 12px;
+            width: 20px;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0 5px 0;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            margin-top: auto;
+        }
+
+        .social-icons a {
+            color: white;
+            font-size: 24px;
+            transition: all 0.3s;
+        }
+
+        .social-icons a:hover {
+            transform: scale(1.3);
+            color: #e74c3c;
+        }
+
+        .content {
+            margin-left: 220px;
+            padding: 30px;
+            min-height: 100vh;
+            background: #f5f5f5;
+            transition: margin-left 0.3s ease;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h2 {
+            color: #002b5c;
+        }
+
+        .search-container {
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .search-container.active {
+            display: block;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #002b5c;
+        }
+
+        .search-box button {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #002b5c 0%, #0056b3 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+        .search-box button:hover {
+            transform: scale(1.05);
+        }
+
+        .stats-container {
+            display: none;
+            margin-bottom: 30px;
+        }
+
+        .stats-container.active {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-card i {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .stat-card.blue i { color: #2196f3; }
+        .stat-card.green i { color: #8bc34a; }
+        .stat-card.pink i { color: #e91e63; }
+        .stat-card.orange i { color: #ff9800; }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .charts-container {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .charts-container.active {
+            display: grid;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .chart-card h3 {
+            color: #002b5c;
+            margin-bottom: 20px;
+        }
+
+        .users-list {
+            display: none;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .users-list.active {
+            display: block;
+        }
+
+        .users-list h3 {
+            color: #002b5c;
+            margin-bottom: 20px;
+        }
+
+        .user-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-item:last-child {
+            border-bottom: none;
+        }
+
+        .user-management-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .user-management-actions button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+            font-size: 14px;
+        }
+
+        .user-management-actions button:hover {
+            transform: translateY(-2px);
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 12px 24px;
+            background: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .nav-tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .nav-tab.blue { border-bottom: 3px solid #2196f3; }
+        .nav-tab.green { border-bottom: 3px solid #8bc34a; }
+        .nav-tab.pink { border-bottom: 3px solid #e91e63; }
+        .nav-tab.yellow { border-bottom: 3px solid #ffeb3b; }
+        .nav-tab.red { border-bottom: 3px solid #f44336; }
+        .nav-tab.orange { border-bottom: 3px solid #ff9800; }
+        .nav-tab.gray { border-bottom: 3px solid #9e9e9e; }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .book-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .book-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .card-header-bar {
+            height: 8px;
+        }
+
+        .card-header-bar.blue { background: #2196f3; }
+        .card-header-bar.green { background: #8bc34a; }
+        .card-header-bar.pink { background: #e91e63; }
+        .card-header-bar.yellow { background: #ffeb3b; }
+        .card-header-bar.red { background: #f44336; }
+        .card-header-bar.orange { background: #ff9800; }
+        .card-header-bar.gray { background: #9e9e9e; }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 150px;
+            object-fit: contain;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            background: #f5f5f5;
+        }
+
+        .card-info {
+            margin-bottom: 45px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .card-author {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .card-actions {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-icon {
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #ddd;
+        }
+
+        .action-icon:hover {
+            transform: scale(1.2);
+        }
+
+        .action-icon.active {
+            color: #e91e63;
+        }
+
+        .action-icon.fa-bookmark.active {
+            color: #ffd700;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            overflow-y: auto;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            background: #f5f5f5;
+            margin: 50px auto;
+            padding: 0;
+            width: 90%;
+            max-width: 1000px;
+            border-radius: 20px;
+            position: relative;
+            animation: slideUp 0.3s;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            cursor: pointer;
+            z-index: 10;
+            background: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: #e91e63;
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        .modal-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            padding: 40px;
+        }
+
+        .modal-left {
+            text-align: center;
+        }
+
+        .modal-book-image {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+
+        .modal-right {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .modal-section {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .modal-section h3 {
+            color: #002b5c;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-section h3 i {
+            color: #667eea;
+        }
+
+        .modal-content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .character-list {
+            list-style: none;
+            padding: 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .character-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .character-list li:last-child {
+            border-bottom: none;
+        }
+
+        .audio-player {
+            background: linear-gradient(135deg, #002b5c 0%, #004d8c 100%);
+            padding: 20px;
+            border-radius: 15px;
+            color: white;
+            box-shadow: 0 8px 20px rgba(0, 43, 92, 0.3);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .audio-player h4 {
+            margin: 0 0 15px 0;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .audio-player audio {
+            width: 100%;
+            height: 40px;
+            border-radius: 10px;
+        }
+
+        .audio-player audio::-webkit-media-controls-panel {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .audio-player audio::-webkit-media-controls-play-button {
+            background-color: white;
+            border-radius: 50%;
+        }
+
+        .audio-player-empty {
+            text-align: center;
+            opacity: 0.8;
+            font-size: 14px;
+        }
+
+        .audio-player-empty i {
+            font-size: 24px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .modal-actions button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .modal-actions button:hover {
+            transform: translateY(-2px);
+        }
+
+        .admin-panel {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .book-management-item {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .book-management-item h4 {
+            color: #002b5c;
+            margin-bottom: 5px;
+        }
+
+        .book-management-item p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .book-management-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .book-management-actions button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+        .book-management-actions button:hover {
+            transform: translateY(-2px);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .user-blocked {
+            opacity: 0.6;
+            background: #ffebee !important;
+        }
+
+        .blocked-badge {
+            background: #f44336;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .content {
+                margin-left: 0;
+                padding-top: 80px;
+            }
+
+            .modal-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-container.active {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-container.active {
+                grid-template-columns: 1fr;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tabs {
+                gap: 8px;
+            }
+
+            .nav-tab {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+
+            .login-box {
+                padding: 30px 20px;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 20px auto;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .search-box button {
+                width: 100%;
+            }
+
+            .user-management-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .user-management-actions button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h2 {
+                font-size: 20px;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .stat-number {
+                font-size: 28px;
+            }
+
+            .sidebar {
+                padding: 15px;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .modal-grid {
+                padding: 20px;
+            }
+
+            .book-management-item {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .book-management-actions {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .book-management-actions button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Login Screen -->
+    <div class="login-container" id="loginScreen">
+        <div class="login-box">
+            <div class="login-logo">
+                <div class="logo-circle">
+                    <img src="./Recursos/Mas Que Leer.png" alt="Logo" style="width: 90%; height: 90%; object-fit: contain;" />
+                </div>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+
+            <!-- Login Form -->
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Usuario</label>
+                    <input type="text" id="loginUsername" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="loginPassword" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword('loginPassword', this)">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <button type="submit" class="btn">Iniciar Sesión</button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" class="hidden">
+                <div class="form-group">
+                    <label>Nombre Completo</label>
+                    <input type="text" id="registerName" required>
+                </div>
+                <div class="form-group">
+                    <label>Usuario</label>
+                    <input type="text" id="registerUsername" required>
+                </div>
+                <div class="form-group">
+</label>
+                    <input type="password" id="registerPassword" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword('registerPassword', this)">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="form-group">
+                    <label>Rol</label>
+                    <div class="role-selector">
+                        <div class="role-option selected" data-role="user">
+                            <i class="fas fa-user"></i><br>Usuario
+                        </div>
+                        <div class="role-option" data-role="admin">
+                            <i class="fas fa-user-shield"></i><br>Admin
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group hidden" id="adminKeyGroup">
+                    <label>Clave de Administrador</label>
+                    <input type="password" id="adminKey" placeholder="Ingresa la clave de administrador">
+                </div>
+                <button type="submit" class="btn">Registrarse</button>
+            </form>
+
+            <div class="toggle-form">
+                <span id="toggleText">¿No tienes cuenta?</span>
+                <a href="#" id="toggleLink">Regístrate aquí</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div class="app-container" id="appContainer">
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header" id="sidebarHeader">
+                <div class="sidebar-logo">
+                    <img src="./Recursos/Mas Que Leer.png" alt="Logo" style="width: 90%; height: 90%; object-fit: contain;" />
+                </div>
+            </div>
+
+            <div class="user-info" id="userInfo">
+                <div class="user-name">Usuario</div>
+                <div class="user-role">Rol</div>
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="dropdown-item logout" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-menu" id="sidebarMenu"></div>
+
+            <div class="social-icons">
+                <a href="https://www.instagram.com/masqueleercol" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-tiktok"></i></a>
+                <a href="#"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="header">
+                <h2 id="viewTitle">Todos los Libros</h2>
+            </div>
+
+            <!-- Stats Container -->
+            <div class="stats-container" id="statsContainer">
+                <div class="stat-card blue">
+                    <i class="fas fa-book"></i>
+                    <div class="stat-number" id="totalBooks">0</div>
+                    <div class="stat-label">Total de Libros</div>
+                </div>
+                <div class="stat-card pink">
+                    <i class="fas fa-heart"></i>
+                    <div class="stat-number" id="totalLikes">0</div>
+                    <div class="stat-label">Me Gusta Totales</div>
+                </div>
+                <div class="stat-card orange">
+                    <i class="fas fa-bookmark"></i>
+                    <div class="stat-number" id="totalSaved">0</div>
+                    <div class="stat-label">Guardados Totales</div>
+                </div>
+                <div class="stat-card green">
+                    <i class="fas fa-users"></i>
+                    <div class="stat-number" id="totalUsers">0</div>
+                    <div class="stat-label">Usuarios Registrados</div>
+                </div>
+            </div>
+
+            <!-- Charts Container -->
+            <div class="charts-container" id="chartsContainer">
+                <div class="chart-card">
+                    <h3><i class="fas fa-heart"></i> Libros Más Gustados</h3>
+                    <canvas id="likesChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3><i class="fas fa-bookmark"></i> Libros Más Guardados</h3>
+                    <canvas id="savedChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Users List -->
+            <div class="users-list" id="usersList">
+                <h3><i class="fas fa-users"></i> Usuarios Registrados</h3>
+                <div id="usersListContent"></div>
+            </div>
+
+            <!-- Admin Panel -->
+            <div class="admin-panel hidden" id="adminPanel">
+                <h3 style="color: #002b5c; margin-bottom: 20px;"><i class="fas fa-cog"></i> Gestión de Libros</h3>
+                
+                <div style="margin-bottom: 30px;">
+                    <button class="btn btn-success" id="showAddBookForm">
+                        <i class="fas fa-plus"></i> Agregar Nuevo Libro
+                    </button>
+                </div>
+
+                <div id="addBookFormContainer" class="hidden">
+                    <h4 style="color: #002b5c; margin-bottom: 20px;" id="formTitle">Agregar Nuevo Libro</h4>
+                    <form id="addBookForm">
+                        <input type="hidden" id="editBookId">
+                        <div class="form-group">
+                            <label>Título</label>
+                            <input type="text" id="bookTitle" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Autor</label>
+                            <input type="text" id="bookAuthor" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Categoría</label>
+                            <select id="bookCategory" required>
+                                <option value="blue">Novela</option>
+                                <option value="green">Cuento</option>
+                                <option value="pink">Poesía</option>
+                                <option value="yellow">Álbum</option>
+                                <option value="red">Historieta</option>
+                                <option value="orange">Mito/Leyenda</option>
+                                <option value="gray">Teatro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Género</label>
+                            <input type="text" id="bookGenre" placeholder="Ej: Drama, Ficción" required>
+                        </div>
+                        <div class="form-group">
+                            <label>URL de Imagen</label>
+                            <input type="url" id="bookImage" placeholder="https://ejemplo.com/imagen.jpg" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Reseña</label>
+                            <textarea id="bookReview" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Personajes (separados por coma)</label>
+                            <input type="text" id="bookCharacters" placeholder="Personaje 1, Personaje 2, Personaje 3">
+                        </div>
+                        <div class="form-group">
+                            <label>URL Audio Tráiler (opcional)</label>
+                            <input type="url" id="bookAudio" placeholder="https://ejemplo.com/audio.mp3">
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button type="submit" class="btn btn-success" style="flex: 1;">
+                                <i class="fas fa-save"></i> <span id="submitBtnText">Agregar Libro</span>
+                            </button>
+                            <button type="button" class="btn" style="flex: 1; background: #999;" id="cancelEditBtn">
+                                <i class="fas fa-times"></i> Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="bookManagementList">
+                    <h4 style="color: #002b5c; margin: 30px 0 20px 0;">Libros Existentes</h4>
+                    <div id="booksList"></div>
+                </div>
+            </div>
+
+            <!-- Search Container -->
+            <div class="search-container" id="searchContainer">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Buscar por título o autor...">
+                    <button id="searchBtn"><i class="fas fa-search"></i> Buscar</button>
+                </div>
+            </div>
+
+            <div class="nav-tabs" id="navTabs">
+                <button class="nav-tab blue" data-filter="all">Todos</button>
+                <button class="nav-tab blue" data-filter="blue">Novela</button>
+                <button class="nav-tab green" data-filter="green">Cuento</button>
+                <button class="nav-tab pink" data-filter="pink">Poesía</button>
+                <button class="nav-tab yellow" data-filter="yellow">Álbum</button>
+                <button class="nav-tab red" data-filter="red">Historieta</button>
+                <button class="nav-tab orange" data-filter="orange">Mito/Leyenda</button>
+                <button class="nav-tab gray" data-filter="gray">Teatro</button>
+            </div>
+
+            <div class="card-grid" id="cardGrid"></div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="bookModal">
+        <div class="modal-content">
+            <span class="modal-close" id="modalClose">&times;</span>
+            <div class="modal-grid" id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+
+        const ADMIN_KEY = "masqueleer2025"; // Clave de administrador
+
+        // Toggle Password Visibility
+        function togglePassword(inputId, button) {
+            const input = document.getElementById(inputId);
+            const icon = button.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Data Storage
+        const DB = {
+            users: [],
+            books: [],
+            currentUser: null,
+
+            init() {
+                const savedUsers = this.getStorage('mqr_users');
+                const savedBooks = this.getStorage('mqr_books');
+                
+                if (savedUsers) {
+                    this.users = JSON.parse(savedUsers);
+                } else {
+                    this.users = [
+                        {
+                            id: 1,
+                            username: 'admin',
+                            password: 'admin123',
+                            name: 'Administrador',
+                            role: 'admin',
+                            savedBooks: [],
+                            likedBooks: [],
+                            blocked: false
+                        },
+                    ];
+                    this.saveUsers();
+                }
+
+                if (savedBooks) {
+                    this.books = JSON.parse(savedBooks);
+                } else {
+                    this.initBooks();
+                }
+            },
+
+            getStorage(key) {
+                try {
+                    return localStorage.getItem(key);
+                } catch (e) {
+                    return sessionStorage.getItem(key);
+                }
+            },
+
+            setStorage(key, value) {
+                try {
+                    localStorage.setItem(key, value);
+                } catch (e) {
+                    sessionStorage.setItem(key, value);
+                }
+            },
+
+            removeStorage(key) {
+                try {
+                    localStorage.removeItem(key);
+                } catch (e) {
+                    sessionStorage.removeItem(key);
+                }
+            },
+
+            initBooks() {
+                this.books = [
+                    {
+                        id: 1,
+                        title: '100 Años de Soledad',
+                        author: 'Gabriel García Márquez',
+                        category: 'blue',
+                        genre: 'Realismo Mágico, Ficción, Narrativa',
+                        image: './Recursos/libros/100 Años de Soledad.png',
+                        review: 'Es una novela que sigue a la familia Buendía a lo largo de siete generaciones en el pueblo ficticio de Macondo. La obra mezcla lo real y lo fantástico, explorando temas como la soledad y el destino. Es un pilar del realismo mágico y una de las obras más importantes de la literatura latinoamericana.',
+                        characters: ['José Arcadio Buendía', 'Úrsula Iguarán', 'Coronel Aureliano Buendía', 'Amaranta Buendía', 'Remedios la Bella', 'Melquíades'],
+                        audio: ''
+                    },
+                    {
+                        id: 2,
+                        title: 'Akelarre',
+                        author: 'Mario Mendoza',
+                        category: 'blue',
+                        genre: 'Ficción, Narrativa, Novela Histórica',
+                        image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=300',
+                        review: 'Es una novela que mezcla historia y ficción para explorar la persecución de las mujeres acusadas de brujería durante la Inquisición. La trama sigue a varios personajes que se ven envueltos en estos oscuros eventos, revelando las injusticias y el fanatismo de la época.',
+                        characters: ['Isabel', 'Fray Bartolomé', 'María', 'Don Alonso'],
+                        audio: ''
+                    },
+                    {
+                        id: 3,
+                        title: 'Crónicas de Una Muerte Anunciada',
+                        author: 'Gabriel García Márquez',
+                        category: 'blue',
+                        genre: 'Realismo Mágico, Crónica, Tragedia',
+                        image: 'https://images.unsplash.com/photo-1495640388908-05fa85288e61?w=300',
+                        review: 'Narra el asesinato de Santiago Nasar, un joven que es asesinado por los hermanos Vicario para vengar el honor de su hermana Ángela. A pesar de que todo el pueblo sabe del plan, nadie interviene para evitarlo, lo que resalta la crítica social del autor sobre la indiferencia y la fatalidad.',
+                        characters: ['Santiago Nasar', 'Ángela Vicario', 'Pablo y Pedro Vicario', 'El narrador'],
+                        audio: ''
+                    },
+                    {
+                        id: 4,
+                        title: 'El Principito',
+                        author: 'Antoine de Saint-Exupéry',
+                        category: 'blue',
+                        genre: 'Literatura infantil y juvenil, Fábula, Ficción',
+                        image: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=300',
+                        review: 'Narra la historia de un piloto que, tras un accidente en el desierto del Sahara, conoce a un pequeño príncipe proveniente del asteroide B-612. A través de sus conversaciones, el principito le cuenta sobre sus viajes por el universo y las lecciones que ha aprendido sobre la vida, el amor y la amistad.',
+                        characters: ['El Principito', 'El Piloto', 'La Rosa', 'El Zorro'],
+                        audio: ''
+                    },
+                    {
+                        id: 5,
+                        title: 'The Walking Dead',
+                        author: 'Robert Kirkman',
+                        category: 'red',
+                        genre: 'Ficción, Drama, Cómic',
+                        image: 'https://images.unsplash.com/photo-1588681664899-f142ff2dc9b1?w=300',
+                        review: 'La historia sigue a Rick Grimes, un sheriff que despierta de un coma en un mundo devastado por un apocalipsis zombi. A medida que busca a su familia, Rick se convierte en el líder de un grupo de supervivientes, enfrentándose a innumerables desafíos y peligros en su lucha por sobrevivir.',
+                        characters: ['Rick Grimes', 'Carl Grimes', 'Maggie Greene', 'Lori Grimes', 'Andrea Harrison'],
+                        audio: ''
+                    },
+                    {
+                        id: 6,
+                        title: 'Orgullo y Prejuicio',
+                        author: 'Jane Austen',
+                        category: 'blue',
+                        genre: 'Romance, Comedia de costumbres',
+                        image: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=300',
+                        review: 'Narra la historia de Elizabeth Bennet, una joven inteligente y de espíritu independiente, y su relación con el orgulloso y reservado Sr. Darcy. A través de malentendidos y prejuicios, ambos personajes deben superar sus diferencias y aprender a valorar las verdaderas cualidades del otro.',
+                        characters: ['Elizabeth Bennet', 'Fitzwilliam Darcy', 'Jane Bennet', 'Charles Bingley', 'Sr. y Sra. Bennet'],
+                        audio: ''
+                    },
+                    {
+                        id: 7,
+                        title: 'Don Quijote de la Mancha',
+                        author: 'Miguel de Cervantes',
+                        category: 'blue',
+                        genre: 'Parodia, Aventura, Realismo',
+                        image: 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?w=300',
+                        review: 'Narra las aventuras de Alonso Quijano, un hidalgo que, obsesionado con los libros de caballerías, decide convertirse en caballero andante bajo el nombre de Don Quijote. Acompañado por su fiel escudero, Sancho Panza, Don Quijote se embarca en una serie de aventuras cómicas y trágicas.',
+                        characters: ['Don Quijote (Alonso Quijano)', 'Sancho Panza', 'Dulcinea del Toboso', 'Rocinante'],
+                        audio: ''
+                    },
+                    {
+                        id: 8,
+                        title: 'Veinte Poemas de Amor y una Canción Desesperada',
+                        author: 'Pablo Neruda',
+                        category: 'pink',
+                        genre: 'Poesía, Romance',
+                        image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300',
+                        review: 'Una colección de poemas que exploran el amor, la pasión y el desamor con un lenguaje lírico y emotivo. Una de las obras poéticas más leídas en lengua española.',
+                        characters: [],
+                        audio: ''
+                    },
+                ];
+                this.saveBooks();
+            },
+
+            saveUsers() {
+                this.setStorage('mqr_users', JSON.stringify(this.users));
+            },
+
+            saveBooks() {
+                this.setStorage('mqr_books', JSON.stringify(this.books));
+            },
+
+            addBook(bookData) {
+                const newBook = {
+                    id: Math.max(...this.books.map(b => b.id), 0) + 1,
+                    ...bookData,
+                    characters: bookData.characters.split(',').map(c => c.trim()).filter(c => c)
+                };
+                this.books.push(newBook);
+                this.saveBooks();
+                return newBook;
+            },
+
+            updateBook(id, bookData) {
+                const index = this.books.findIndex(b => b.id === id);
+                if (index > -1) {
+                    this.books[index] = {
+                        ...this.books[index],
+                        ...bookData,
+                        characters: bookData.characters.split(',').map(c => c.trim()).filter(c => c)
+                    };
+                    this.saveBooks();
+                    return this.books[index];
+                }
+                return null;
+            },
+
+            deleteBook(id) {
+                this.books = this.books.filter(b => b.id !== id);
+                this.users.forEach(user => {
+                    user.savedBooks = user.savedBooks.filter(bookId => bookId !== id);
+                    user.likedBooks = user.likedBooks.filter(bookId => bookId !== id);
+                });
+                this.saveBooks();
+                this.saveUsers();
+            },
+
+            register(username, password, name, role, adminKey = '') {
+                const exists = this.users.find(u => u.username === username);
+                if (exists) return { success: false, message: 'El usuario ya existe' };
+
+                if (role === 'admin' && adminKey !== ADMIN_KEY) {
+                    return { success: false, message: 'Clave de administrador incorrecta' };
+                }
+
+                const newUser = {
+                    id: Math.max(...this.users.map(u => u.id), 0) + 1,
+                    username,
+                    password,
+                    name,
+                    role,
+                    savedBooks: [],
+                    likedBooks: [],
+                    blocked: false
+                };
+
+                this.users.push(newUser);
+                this.saveUsers();
+                return { success: true, user: newUser };
+            },
+
+            login(username, password) {
+                const user = this.users.find(u => u.username === username && u.password === password);
+                if (user) {
+                    if (user.blocked) {
+                        return { success: false, message: 'Usuario bloqueado. Contacta al administrador.' };
+                    }
+                    this.currentUser = user;
+                    return { success: true, user };
+                }
+                return { success: false, message: 'Usuario o contraseña incorrectos' };
+            },
+
+            toggleUserBlock(userId) {
+                const user = this.users.find(u => u.id === userId);
+                if (user && user.id !== this.currentUser.id) {
+                    user.blocked = !user.blocked;
+                    this.saveUsers();
+                    return true;
+                }
+                return false;
+            },
+
+            deleteUser(userId) {
+                const user = this.users.find(u => u.id === userId);
+                if (user && user.id !== this.currentUser.id) {
+                    this.users = this.users.filter(u => u.id !== userId);
+                    this.saveUsers();
+                    return true;
+                }
+                return false;
+            },
+
+            toggleSaved(bookId) {
+                if (!this.currentUser || this.currentUser.role === 'admin') return;
+                const index = this.currentUser.savedBooks.indexOf(bookId);
+                if (index > -1) {
+                    this.currentUser.savedBooks.splice(index, 1);
+                } else {
+                    this.currentUser.savedBooks.push(bookId);
+                }
+                const userIndex = this.users.findIndex(u => u.id === this.currentUser.id);
+                this.users[userIndex] = this.currentUser;
+                this.saveUsers();
+            },
+
+            toggleLiked(bookId) {
+                if (!this.currentUser || this.currentUser.role === 'admin') return;
+                const index = this.currentUser.likedBooks.indexOf(bookId);
+                if (index > -1) {
+                    this.currentUser.likedBooks.splice(index, 1);
+                } else {
+                    this.currentUser.likedBooks.push(bookId);
+                }
+                const userIndex = this.users.findIndex(u => u.id === this.currentUser.id);
+                this.users[userIndex] = this.currentUser;
+                this.saveUsers();
+            },
+
+            isSaved(bookId) {
+                return this.currentUser && this.currentUser.savedBooks.includes(bookId);
+            },
+
+            isLiked(bookId) {
+                return this.currentUser && this.currentUser.likedBooks.includes(bookId);
+            },
+
+            getMostLikedBooks() {
+                const likeCounts = {};
+                this.users.forEach(user => {
+                    user.likedBooks.forEach(bookId => {
+                        likeCounts[bookId] = (likeCounts[bookId] || 0) + 1;
+                    });
+                });
+                return Object.entries(likeCounts)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 5)
+                    .map(([bookId, count]) => ({
+                        book: this.books.find(b => b.id === parseInt(bookId)),
+                        count
+                    }))
+                    .filter(item => item.book);
+            },
+
+            getMostSavedBooks() {
+                const saveCounts = {};
+                this.users.forEach(user => {
+                    user.savedBooks.forEach(bookId => {
+                        saveCounts[bookId] = (saveCounts[bookId] || 0) + 1;
+                    });
+                });
+                return Object.entries(saveCounts)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 5)
+                    .map(([bookId, count]) => ({
+                        book: this.books.find(b => b.id === parseInt(bookId)),
+                        count
+                    }))
+                    .filter(item => item.book);
+            },
+
+            getTotalLikes() {
+                return this.users.reduce((sum, user) => sum + user.likedBooks.length, 0);
+            },
+
+            getTotalSaved() {
+                return this.users.reduce((sum, user) => sum + user.savedBooks.length, 0);
+            },
+
+            shuffleBooks() {
+                const shuffled = [...this.books];
+                for (let i = shuffled.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                }
+                return shuffled;
+            }
+        };
+
+        // UI Controller
+        const UI = {
+            showLogin() {
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('appContainer').style.display = 'none';
+            },
+
+            showApp() {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('appContainer').style.display = 'block';
+                this.updateUserInfo();
+                this.setupMenu();
+                this.showView('all');
+            },
+
+setupMenu() {
+                const menu = document.getElementById('sidebarMenu');
+                const isAdmin = DB.currentUser.role === 'admin';
+                
+                menu.innerHTML = `
+                    ${isAdmin ? `
+                        <a href="#" data-view="stats">
+                            <i class="fas fa-chart-bar"></i> Estadísticas
+                        </a>
+                        <a href="#" data-view="manage-books">
+                            <i class="fas fa-cog"></i> Gestionar Libros
+                        </a>
+                    ` : ''}
+                    <a href="#" data-view="all" class="active">
+                        <i class="fas fa-home"></i> Inicio
+                    </a>
+                    <a href="#" data-view="discover">
+                        <i class="fas fa-search"></i> Descubre
+                    </a>
+                    ${!isAdmin ? `
+                        <a href="#" data-view="liked">
+                            <i class="fas fa-heart"></i> Me gusta
+                        </a>
+                        <a href="#" data-view="saved">
+                            <i class="fas fa-bookmark"></i> Guardados
+                        </a>
+                    ` : ''}
+                `;
+
+                menu.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        menu.querySelectorAll('a').forEach(l => l.classList.remove('active'));
+                        link.classList.add('active');
+                        this.showView(link.dataset.view);
+                        if (window.innerWidth <= 768) {
+                            document.getElementById('sidebar').classList.remove('active');
+                        }
+                    });
+                });
+            },
+
+            showView(view) {
+                currentView = view;
+                currentFilter = 'all';
+                currentSearch = '';
+
+                document.getElementById('statsContainer').classList.remove('active');
+                document.getElementById('chartsContainer').classList.remove('active');
+                document.getElementById('usersList').classList.remove('active');
+                document.getElementById('adminPanel').classList.add('hidden');
+                document.getElementById('searchContainer').classList.remove('active');
+                document.getElementById('navTabs').style.display = 'flex';
+                document.getElementById('cardGrid').style.display = 'grid';
+
+                const titles = {
+                    all: 'Todos los Libros',
+                    saved: 'Libros Guardados',
+                    liked: 'Libros que Me Gustan',
+                    discover: 'Descubre Nuevos Libros',
+                    stats: 'Estadísticas',
+                    'manage-books': 'Gestionar Libros'
+                };
+
+                document.getElementById('viewTitle').textContent = titles[view] || 'Mas Que Leer';
+
+                if (view === 'stats') {
+                    this.showStats();
+                } else if (view === 'manage-books') {
+                    this.showManageBooks();
+                } else {
+                    if (view === 'discover') {
+                        document.getElementById('searchContainer').classList.add('active');
+                    }
+                    this.renderBooks(currentFilter, view, currentSearch);
+                }
+            },
+
+                       showStats() {
+                document.getElementById('navTabs').style.display = 'none';
+                document.getElementById('cardGrid').style.display = 'none';
+                document.getElementById('statsContainer').classList.add('active');
+                document.getElementById('chartsContainer').classList.add('active');
+                document.getElementById('usersList').classList.add('active');
+
+                document.getElementById('totalBooks').textContent = DB.books.length;
+                document.getElementById('totalLikes').textContent = DB.getTotalLikes();
+                document.getElementById('totalSaved').textContent = DB.getTotalSaved();
+                document.getElementById('totalUsers').textContent = DB.users.length;
+
+                const usersListContent = document.getElementById('usersListContent');
+                usersListContent.innerHTML = DB.users.map(user => {
+                    const likedBooks = user.likedBooks.map(id => {
+                        const book = DB.books.find(b => b.id === id);
+                        return book ? book.title : '';
+                    }).filter(t => t).join(', ') || 'Ninguno';
+
+                    const savedBooks = user.savedBooks.map(id => {
+                        const book = DB.books.find(b => b.id === id);
+                        return book ? book.title : '';
+                    }).filter(t => t).join(', ') || 'Ninguno';
+
+                    const isBlocked = user.blocked;
+                    const isCurrentUser = user.id === DB.currentUser.id;
+                    const canManage = !isCurrentUser;
+
+                    return `
+                        <div class="user-item ${isBlocked ? 'user-blocked' : ''}" style="flex-direction: column; align-items: flex-start; padding: 20px; background: #f9f9f9; border-radius: 10px; margin-bottom: 15px;">
+                            <div style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 10px; align-items: center; flex-wrap: wrap; gap: 10px;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <strong style="color: #002b5c; font-size: 16px;">
+                                        <i class="fas fa-user"></i> ${user.name}
+                                    </strong>
+                                    <span style="background: ${user.role === 'admin' ? '#667eea' : '#8bc34a'}; color: white; padding: 4px 12px; border-radius: 15px; font-size: 12px;">
+                                        ${user.role === 'admin' ? 'Administrador' : 'Usuario'}
+                                    </span>
+                                    ${isCurrentUser ? '<span style="background: #2196f3; color: white; padding: 4px 12px; border-radius: 15px; font-size: 12px;"><i class="fas fa-star"></i> Tú</span>' : ''}
+                                    ${isBlocked ? '<span class="blocked-badge"><i class="fas fa-ban"></i> Bloqueado</span>' : ''}
+                                </div>
+                                ${canManage ? `
+                                    <div class="user-management-actions">
+                                        <button class="btn ${isBlocked ? 'btn-success' : 'btn-warning'}" onclick="UI.toggleBlockUser(${user.id})" style="width: auto; padding: 8px 16px;">
+                                            <i class="fas fa-${isBlocked ? 'unlock' : 'ban'}"></i> ${isBlocked ? 'Desbloquear' : 'Bloquear'}
+                                        </button>
+                                        <button class="btn btn-danger" onclick="UI.deleteUser(${user.id})" style="width: auto; padding: 8px 16px;">
+                                            <i class="fas fa-trash"></i> Eliminar
+                                        </button>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            <div style="width: 100%; color: #666; font-size: 14px; line-height: 1.8;">
+                                <div style="margin-bottom: 8px;">
+                                    <strong style="color: #e91e63;"><i class="fas fa-heart"></i> Libros que le gustan:</strong><br>
+                                    <span style="margin-left: 20px;">${likedBooks}</span>
+                                </div>
+                                <div>
+                                    <strong style="color: #ffd700;"><i class="fas fa-bookmark"></i> Libros guardados:</strong><br>
+                                    <span style="margin-left: 20px;">${savedBooks}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                this.renderCharts();
+            },
+
+            renderCharts() {
+                const mostLiked = DB.getMostLikedBooks();
+                const mostSaved = DB.getMostSavedBooks();
+
+                if (window.likesChartInstance) window.likesChartInstance.destroy();
+                if (window.savedChartInstance) window.savedChartInstance.destroy();
+
+                const likesCtx = document.getElementById('likesChart').getContext('2d');
+                window.likesChartInstance = new Chart(likesCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: mostLiked.map(item => item.book.title.substring(0, 20) + '...'),
+                        datasets: [{
+                            label: 'Me Gusta',
+                            data: mostLiked.map(item => item.count),
+                            backgroundColor: '#e91e63',
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                        }
+                    }
+                });
+
+                const savedCtx = document.getElementById('savedChart').getContext('2d');
+                window.savedChartInstance = new Chart(savedCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: mostSaved.map(item => item.book.title.substring(0, 20) + '...'),
+                        datasets: [{
+                            label: 'Guardados',
+                            data: mostSaved.map(item => item.count),
+                            backgroundColor: '#ffd700',
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                        }
+                    }
+                });
+            },
+
+            showManageBooks() {
+                document.getElementById('navTabs').style.display = 'none';
+                document.getElementById('cardGrid').style.display = 'none';
+                document.getElementById('adminPanel').classList.remove('hidden');
+                this.renderBooksList();
+            },
+
+            renderBooksList() {
+                const booksList = document.getElementById('booksList');
+                booksList.innerHTML = DB.books.map(book => `
+                    <div class="book-management-item">
+                        <div>
+                            <h4>${book.title}</h4>
+                            <p>${book.author} - ${book.genre}</p>
+                        </div>
+                        <div class="book-management-actions">
+                            <button class="btn btn-success" onclick="UI.editBook(${book.id})" style="width: auto; padding: 8px 16px;">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                            <button class="btn btn-danger" onclick="UI.deleteBook(${book.id})" style="width: auto; padding: 8px 16px;">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            },
+
+            editBook(bookId) {
+                const book = DB.books.find(b => b.id === bookId);
+                if (!book) return;
+
+                document.getElementById('addBookFormContainer').classList.remove('hidden');
+                document.getElementById('formTitle').textContent = 'Editar Libro';
+                document.getElementById('submitBtnText').textContent = 'Actualizar Libro';
+                document.getElementById('editBookId').value = book.id;
+                document.getElementById('bookTitle').value = book.title;
+                document.getElementById('bookAuthor').value = book.author;
+                document.getElementById('bookCategory').value = book.category;
+                document.getElementById('bookGenre').value = book.genre;
+                document.getElementById('bookImage').value = book.image;
+                document.getElementById('bookReview').value = book.review;
+                document.getElementById('bookCharacters').value = book.characters.join(', ');
+                document.getElementById('bookAudio').value = book.audio || '';
+
+                document.getElementById('addBookFormContainer').scrollIntoView({ behavior: 'smooth' });
+            },
+
+            deleteBook(bookId) {
+                if (confirm('¿Estás seguro de que deseas eliminar este libro?')) {
+                    DB.deleteBook(bookId);
+                    this.renderBooksList();
+                    alert('Libro eliminado exitosamente');
+                }
+            },
+
+            toggleBlockUser(userId) {
+                if (DB.toggleUserBlock(userId)) {
+                    this.showStats();
+                    alert('Estado del usuario actualizado');
+                }
+            },
+
+            deleteUser(userId) {
+                if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
+                    if (DB.deleteUser(userId)) {
+                        this.showStats();
+                        alert('Usuario eliminado exitosamente');
+                    }
+                }
+            },
+
+            showError(message) {
+                const errorEl = document.getElementById('errorMessage');
+                errorEl.textContent = message;
+                errorEl.style.display = 'block';
+                setTimeout(() => {
+                    errorEl.style.display = 'none';
+                }, 3000);
+            },
+
+            updateUserInfo() {
+
+
+                const user = DB.currentUser;
+                document.getElementById('userInfo').innerHTML = `
+                    <div class="user-name">${user.name}</div>
+                    <div class="user-role">${user.role === 'admin' ? 'Administrador' : 'Usuario'}</div>
+                    <div class="user-dropdown" id="userDropdown">
+                        <div class="dropdown-item logout" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('userInfo').addEventListener('click', (e) => {
+                    if (!e.target.closest('.user-dropdown')) {
+                        document.getElementById('userDropdown').classList.toggle('show');
+                    }
+                });
+
+                document.getElementById('logoutBtn').addEventListener('click', () => {
+                    DB.currentUser = null;
+                    currentFilter = 'all';
+                    currentView = 'all';
+                    UI.showLogin();
+                    document.getElementById('loginForm').reset();
+                });
+            },
+
+            renderBooks(filter = 'all', view = 'all', searchTerm = '') {
+                const grid = document.getElementById('cardGrid');
+                let books = view === 'all' ? DB.shuffleBooks() : [...DB.books];
+
+                if (searchTerm) {
+                    books = books.filter(b => 
+                        b.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        b.author.toLowerCase().includes(searchTerm.toLowerCase())
+                    );
+                }
+
+                if (view === 'saved') {
+                    books = books.filter(b => DB.isSaved(b.id));
+                } else if (view === 'liked') {
+                    books = books.filter(b => DB.isLiked(b.id));
+                }
+
+                if (filter !== 'all') {
+                    books = books.filter(b => b.category === filter);
+                }
+
+                if (books.length === 0) {
+                    grid.innerHTML = '<p style="text-align:center;color:#666;padding:40px;grid-column: 1/-1;">No se encontraron libros</p>';
+                    return;
+                }
+
+                const isAdmin = DB.currentUser.role === 'admin';
+
+                grid.innerHTML = books.map(book => `
+                    <div class="book-card" data-book-id="${book.id}">
+                        <div class="card-header-bar ${book.category}"></div>
+                        <div class="card-body">
+                            <img src="${book.image}" alt="${book.title}" class="card-image">
+                            <div class="card-info">
+                                <div class="card-title">${book.title}</div>
+                                <div class="card-author">${book.author}</div>
+                            </div>
+                            ${!isAdmin ? `
+                                <div class="card-actions">
+                                    <i class="action-icon fas fa-heart ${DB.isLiked(book.id) ? 'active' : ''}" data-action="like" data-book-id="${book.id}"></i>
+                                    <i class="action-icon fas fa-bookmark ${DB.isSaved(book.id) ? 'active' : ''}" data-action="save" data-book-id="${book.id}"></i>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `).join('');
+                document.querySelectorAll('.book-card').forEach(card => {
+                    card.addEventListener('click', (e) => {
+                        if (!e.target.closest('.action-icon')) {
+                            const bookId = parseInt(card.dataset.bookId);
+                            this.showModal(bookId);
+                        }
+                    });
+                });
+
+                if (!isAdmin) {
+                    document.querySelectorAll('.action-icon').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            const action = btn.dataset.action;
+                            const bookId = parseInt(btn.dataset.bookId);
+                            
+                            if (action === 'like') {
+                                DB.toggleLiked(bookId);
+                                btn.classList.toggle('active');
+                            } else if (action === 'save') {
+                                DB.toggleSaved(bookId);
+                                btn.classList.toggle('active');
+                            }
+                        });
+                    });
+                }
+            },
+
+            showModal(bookId) {
+                const book = DB.books.find(b => b.id === bookId);
+                if (!book) return;
+
+                const modal = document.getElementById('bookModal');
+                const content = document.getElementById('modalContent');
+                const isAdmin = DB.currentUser.role === 'admin';
+
+                const hasCharacters = book.characters && book.characters.length > 0;
+                const hasAudio = book.audio && book.audio.trim() !== '';
+
+                content.innerHTML = `
+                    <div class="modal-left">
+                        <img src="${book.image}" alt="${book.title}" class="modal-book-image">
+                        <h2 style="color: #002b5c; margin: 15px 0;">${book.title}</h2>
+                        <p style="color: #666; font-size: 16px;">${book.author}</p>
+                        <p style="color: #667eea; font-size: 14px; margin-top: 10px;">${book.genre}</p>
+                    </div>
+                    <div class="modal-right">
+                        <div class="modal-section">
+                            <h3><i class="fas fa-book-reader"></i> Reseña</h3>
+                            <p style="line-height: 1.8; color: #444;">${book.review}</p>
+                        </div>
+                        
+                        <div class="modal-content-grid">
+                            ${hasCharacters ? `
+                                <div class="modal-section">
+                                    <h3><i class="fas fa-users"></i> Personajes</h3>
+                                    <ul class="character-list">
+                                        ${book.characters.map(char => `<li><i class="fas fa-user-circle" style="color: #667eea; margin-right: 8px;"></i> ${char}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : '<div></div>'}
+                            
+                            ${hasAudio ? `
+                                <div class="modal-section" style="padding: 0; background: transparent; box-shadow: none;">
+                                    <div class="audio-player">
+                                        <h4><i class="fas fa-music"></i> Tráiler Literario</h4>
+                                        <audio controls>
+                                            <source src="${book.audio}" type="audio/mpeg">
+                                            Tu navegador no soporta el elemento de audio.
+                                        </audio>
+                                    </div>
+                                </div>
+                            ` : `
+                                <div class="modal-section" style="padding: 0; background: transparent; box-shadow: none;">
+                                    <div class="audio-player">
+                                        <h4><i class="fas fa-music"></i> Tráiler Literario</h4>
+                                        <div class="audio-player-empty">
+                                            <i class="fas fa-volume-mute"></i>
+                                            No hay audio disponible
+                                        </div>
+                                    </div>
+                                </div>
+                            `}
+                        </div>
+                        
+                        ${!isAdmin ? `
+                            <div class="modal-section">
+                                <div class="modal-actions">
+                                    <button class="btn" onclick="UI.toggleBookLike(${book.id})" style="background: ${DB.isLiked(book.id) ? '#999' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'};">
+                                        <i class="fas fa-heart"></i> ${DB.isLiked(book.id) ? 'Quitar Me Gusta' : 'Me Gusta'}
+                                    </button>
+                                    <button class="btn" onclick="UI.toggleBookSave(${book.id})" style="background: ${DB.isSaved(book.id) ? '#999' : 'linear-gradient(135deg, #ffd700 0%, #ff9800 100%)'};">
+                                        <i class="fas fa-bookmark"></i> ${DB.isSaved(book.id) ? 'Quitar Guardado' : 'Guardar'}
+                                    </button>
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+
+                modal.style.display = 'block';
+            },
+
+            closeModal() {
+                document.getElementById('bookModal').style.display = 'none';
+            },
+
+            toggleBookLike(bookId) {
+                DB.toggleLiked(bookId);
+                this.closeModal();
+                this.renderBooks(currentFilter, currentView, currentSearch);
+            },
+
+            toggleBookSave(bookId) {
+                DB.toggleSaved(bookId);
+                this.closeModal();
+                this.renderBooks(currentFilter, currentView, currentSearch);
+            }
+        };
+
+        let currentFilter = 'all';
+        let currentView = 'all';
+        let currentSearch = '';
+
+        DB.init();
+        UI.showLogin();
+
+        // Mobile Menu Toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+
+        // Login Form
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const result = DB.login(username, password);
+            if (result.success) {
+                UI.showApp();
+            } else {
+                UI.showError(result.message);
+            }
+        });
+
+        // Register Form
+        document.getElementById('registerForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('registerName').value;
+            const username = document.getElementById('registerUsername').value;
+            const password = document.getElementById('registerPassword').value;
+            const role = document.querySelector('.role-option.selected').dataset.role;
+            const adminKey = document.getElementById('adminKey').value;
+
+            const result = DB.register(username, password, name, role, adminKey);
+            if (result.success) {
+                DB.login(username, password);
+                UI.showApp();
+            } else {
+                UI.showError(result.message);
+            }
+        });
+
+        // Role Selector with Admin Key
+        document.querySelectorAll('.role-option').forEach(option => {
+            option.addEventListener('click', () => {
+                document.querySelectorAll('.role-option').forEach(o => o.classList.remove('selected'));
+                option.classList.add('selected');
+                
+                const adminKeyGroup = document.getElementById('adminKeyGroup');
+                if (option.dataset.role === 'admin') {
+                    adminKeyGroup.classList.remove('hidden');
+                } else {
+                    adminKeyGroup.classList.add('hidden');
+                }
+            });
+        });
+
+        // Add/Edit Book Form
+        document.getElementById('addBookForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const editId = document.getElementById('editBookId').value;
+            
+            const bookData = {
+                title: document.getElementById('bookTitle').value,
+                author: document.getElementById('bookAuthor').value,
+                category: document.getElementById('bookCategory').value,
+                genre: document.getElementById('bookGenre').value,
+                image: document.getElementById('bookImage').value,
+                review: document.getElementById('bookReview').value,
+                characters: document.getElementById('bookCharacters').value,
+                audio: document.getElementById('bookAudio').value
+            };
+
+            if (editId) {
+                DB.updateBook(parseInt(editId), bookData);
+                alert('¡Libro actualizado exitosamente!');
+            } else {
+                DB.addBook(bookData);
+                alert('¡Libro agregado exitosamente!');
+            }
+
+            document.getElementById('addBookForm').reset();
+            document.getElementById('editBookId').value = '';
+            document.getElementById('addBookFormContainer').classList.add('hidden');
+            document.getElementById('formTitle').textContent = 'Agregar Nuevo Libro';
+            document.getElementById('submitBtnText').textContent = 'Agregar Libro';
+            UI.renderBooksList();
+        });
+
+        document.getElementById('showAddBookForm').addEventListener('click', () => {
+            document.getElementById('addBookFormContainer').classList.toggle('hidden');
+            document.getElementById('addBookForm').reset();
+            document.getElementById('editBookId').value = '';
+            document.getElementById('formTitle').textContent = 'Agregar Nuevo Libro';
+            document.getElementById('submitBtnText').textContent = 'Agregar Libro';
+        });
+
+        document.getElementById('cancelEditBtn').addEventListener('click', () => {
+            document.getElementById('addBookFormContainer').classList.add('hidden');
+            document.getElementById('addBookForm').reset();
+            document.getElementById('editBookId').value = '';
+            document.getElementById('formTitle').textContent = 'Agregar Nuevo Libro';
+            document.getElementById('submitBtnText').textContent = 'Agregar Libro';
+        });
+
+        document.getElementById('toggleLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const toggleText = document.getElementById('toggleText');
+            const toggleLink = document.getElementById('toggleLink');
+
+            if (loginForm.classList.contains('hidden')) {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                toggleText.textContent = '¿No tienes cuenta?';
+                toggleLink.textContent = 'Regístrate aquí';
+            } else {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                toggleText.textContent = '¿Ya tienes cuenta?';
+                toggleLink.textContent = 'Inicia sesión aquí';
+            }
+        });
+
+        document.getElementById('sidebarHeader').addEventListener('click', () => {
+            const menu = document.getElementById('sidebarMenu');
+            menu.querySelectorAll('a').forEach(l => l.classList.remove('active'));
+            const homeLink = menu.querySelector('[data-view="all"]');
+            if (homeLink) {
+                homeLink.classList.add('active');
+                UI.showView('all');
+            }
+        });
+
+        document.getElementById('searchBtn').addEventListener('click', () => {
+            currentSearch = document.getElementById('searchInput').value;
+            UI.renderBooks(currentFilter, currentView, currentSearch);
+        });
+
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                currentSearch = document.getElementById('searchInput').value;
+                UI.renderBooks(currentFilter, currentView, currentSearch);
+            }
+        });
+
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                currentFilter = tab.dataset.filter;
+                UI.renderBooks(currentFilter, currentView, currentSearch);
+            });
+        });
+
+        document.getElementById('modalClose').addEventListener('click', () => {
+            UI.closeModal();
+        });
+
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('bookModal');
+            if (e.target === modal) {
+                UI.closeModal();
+            }
+
+            const userInfo = document.getElementById('userInfo');
+            const userDropdown = document.getElementById('userDropdown');
+            if (userDropdown && !userInfo.contains(e.target)) {
+                userDropdown.classList.remove('show');
+            }
+
+            const sidebar = document.getElementById('sidebar');
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            if (window.innerWidth <= 768 && !sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
